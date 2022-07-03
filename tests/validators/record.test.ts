@@ -13,6 +13,10 @@ describe('RecordValidator', () => {
 		expectError(() => predicate.parse(null), new ValidationError('s.record(T)', 'Expected the value to not be null', null));
 	});
 
+	test('GIVEN an array THEN throws ValidationError', () => {
+		expectError(() => predicate.parse([]), new ValidationError('s.record(T)', 'Expected the value to not be an array', []));
+	});
+
 	test('GIVEN a matching record THEN returns a record', () => {
 		expect(predicate.parse(value)).toStrictEqual(value);
 	});

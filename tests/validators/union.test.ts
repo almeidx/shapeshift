@@ -25,6 +25,33 @@ describe('UnionValidator', () => {
 		);
 	});
 
+	describe('no validators', () => {
+		test('GIVEN undefined to s.union().optional THEN returns undefined', () => {
+			const optionalUnion = s.union().optional;
+
+			expect(optionalUnion.parse(undefined)).toBeUndefined();
+		});
+
+		test('GIVEN null to s.union().nullable THEN returns null', () => {
+			const nullableUnion = s.union().nullable;
+
+			expect(nullableUnion.parse(null)).toBe(null);
+		});
+
+		test('GIVEN nullish value to s.union().nullish THEN returns null', () => {
+			const nullishUnion = s.union().nullish;
+
+			expect(nullishUnion.parse(null)).toBe(null);
+			expect(nullishUnion.parse(undefined)).toBe(undefined);
+		});
+
+		test('GIVEN anything to s.union().required THEN throws error', () => {
+			const requiredUnion = s.union().required;
+
+			expectError(() => requiredUnion.parse(123), new CombinedError([]));
+		});
+	});
+
 	describe('or', () => {
 		const orPredicate = predicate.or(s.string.array);
 
@@ -50,6 +77,10 @@ describe('UnionValidator', () => {
 
 	describe('optional', () => {
 		const optionalPredicate = predicate.optional;
+
+		test('GIVEN s.union(s.string, s.number).optional THEN returns s.union(s.undefined, s.string, s.number)', () => {
+			expectClonedValidator(optionalPredicate, s.union(s.undefined, s.string, s.number));
+		});
 
 		test.each([undefined, 'hello', 5])('GIVEN %j THEN returns %j', (value) => {
 			expect<string | number | undefined>(optionalPredicate.parse(value)).toBe(value);
@@ -110,6 +141,10 @@ describe('UnionValidator', () => {
 					new ValidationError('s.number', 'Expected a number primitive', value)
 				])
 			);
+		});
+
+		test('GIVEN s.union(s.string, s.number).required THEN returns s.union(s.string, s.number)', () => {
+			expectClonedValidator(predicate.required, s.union(stringPredicate, numberPredicate));
 		});
 
 		describe('nullish', () => {

@@ -96,6 +96,14 @@ describe('ObjectValidator', () => {
 		expect(predicate.parse({})).toStrictEqual({ owo: 'hello' });
 	});
 
+	test('GIVEN an empty object to a strict validator with default values THEN it should populate the value with the default', () => {
+		const predicate = s.object({
+			a: s.string.default('hello')
+		}).strict;
+
+		expect(predicate.parse({})).toStrictEqual({ a: 'hello' });
+	});
+
 	test("GIVEN UnionValidator with LiteralValidator with 'owo' THEN it should be counted as a required key", () => {
 		const predicate = s.object({
 			owo: s.union(s.literal('owo'), s.number)

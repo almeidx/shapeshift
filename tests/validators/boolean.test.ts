@@ -14,7 +14,7 @@ describe('BooleanValidator', () => {
 
 	describe('Comparators', () => {
 		// equal, notEqual
-		describe('equal', () => {
+		describe('equal(true)', () => {
 			const eqPredicate = s.boolean.equal(true);
 
 			test('GIVEN true THEN returns given value', () => {
@@ -26,7 +26,19 @@ describe('BooleanValidator', () => {
 			});
 		});
 
-		describe('notEqual', () => {
+		describe('equal(false)', () => {
+			const nePredicate = s.boolean.equal(false);
+
+			test('GIVEN false THEN returns given value', () => {
+				expect(nePredicate.parse(false)).toBe(false);
+			});
+
+			test('GIVEN true THEN throws ConstraintError', () => {
+				expectError(() => nePredicate.parse(true), new ExpectedConstraintError('s.boolean.false', 'Invalid boolean value', true, 'false'));
+			});
+		});
+
+		describe('notEqual(true)', () => {
 			const nePredicate = s.boolean.notEqual(true);
 
 			test('GIVEN false THEN returns given value', () => {
@@ -35,6 +47,18 @@ describe('BooleanValidator', () => {
 
 			test('GIVEN true THEN throws ConstraintError', () => {
 				expectError(() => nePredicate.parse(true), new ExpectedConstraintError('s.boolean.false', 'Invalid boolean value', true, 'false'));
+			});
+		});
+
+		describe('notEqual(false)', () => {
+			const eqPredicate = s.boolean.notEqual(false);
+
+			test('GIVEN true THEN returns given value', () => {
+				expect(eqPredicate.parse(true)).toBe(true);
+			});
+
+			test('GIVEN false THEN throws ConstraintError', () => {
+				expectError(() => eqPredicate.parse(false), new ExpectedConstraintError('s.boolean.true', 'Invalid boolean value', false, 'true'));
 			});
 		});
 	});
